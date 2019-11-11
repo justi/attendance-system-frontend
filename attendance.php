@@ -22,7 +22,6 @@ if (isset($_GET['month'])) {
 }
 
 //Calculate the amount of days in the selected month
-$num_days = cal_days_in_month(CAL_GREGORIAN, $current_month, $current_year);
 
 ?>
 <!DOCTYPE html>
@@ -55,12 +54,7 @@ $num_days = cal_days_in_month(CAL_GREGORIAN, $current_month, $current_year);
             <thead class="thead-dark">
                 <tr>
                     <th scope="col">Name</th>
-                    <?php
-                        //Generate headers for all the available days in this month
-                        for ( $iter = 1; $iter <= $num_days; $iter++) {
-                            echo '<th scope="col" style="min-width:200px;max-width:300px;">' . $iter . '</th>';
-                        }
-                    ?>
+                    <th scope="col">Date</th>
                 </tr>
             </thead>
             <tbody>
@@ -71,17 +65,13 @@ $num_days = cal_days_in_month(CAL_GREGORIAN, $current_month, $current_year);
                         echo '<td scope="row">' . $user['name'] . '</td>';
 
                         //Iterate through all available days for this month
-                        for ( $iter = 1; $iter <= $num_days; $iter++) {
+                        
                             
                             //For each pass grab any attendance that this particular user might of had for that day
                             $attendance = $database->select("attendance", [
                                 'clock_in'
                             ], [
                                 'user_id' => $user['id'],
-                                'clock_in[<>]' => [
-                                    date('Y-m-d', mktime(0, 0, 0, $current_month, $iter, $current_year)),
-                                    date('Y-m-d', mktime(24, 60, 60, $current_month, $iter, $current_year))
-                                ]
                             ]);
 
                             //Check if our database call actually found anything
@@ -96,7 +86,7 @@ $num_days = cal_days_in_month(CAL_GREGORIAN, $current_month, $current_year);
                                 //If there was nothing in the database notify the user of this.
                                 echo '<td class="table-secondary">No Data Available</td>';
                             }
-                        }
+                       
                         echo '</tr>';
                     }
                 ?>
